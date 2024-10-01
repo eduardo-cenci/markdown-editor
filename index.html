@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Markdown Editor</title>
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+    <script type="module">
+      import { marked } from 'https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js';
+
+      window.addEventListener('DOMContentLoaded', () => {
+        const editor = document.getElementById('editor');
+        const preview = document.getElementById('preview');
+        const button = document.getElementById('button');
+
+        function update() {
+          preview.innerHTML = marked.parse(editor.innerText);
+        }
+
+        function save() {
+          const link = document.createElement('a');
+          const blob = new Blob([editor.innerText], { type: 'text/markdown' });
+
+          link.download = 'markdown.md';
+          link.href = URL.createObjectURL(blob);
+          link.click();
+          URL.revokeObjectURL(link.href);
+        }
+
+        editor.addEventListener('input', update);
+        button.addEventListener('click', save);
+
+        update();
+      });
+    </script>
+  </head>
+  <body class="min-h-screen flex flex-col items-center justify-center gap-4 p-4 font-mono text-white bg-neutral-700">
+    <h1 class="text-xl">Markdown Editor</h1>
+    <div class="w-full max-w-7xl min-h-96 grid grid-cols-1 md:grid-cols-2 gap-4">
+      <p class="p-2 text-green-300 bg-black break-words" id="editor" contenteditable># h1</p>
+      <div class="prose prose-invert prose-sm p-2 bg-black min-w-full break-words" id="preview"></div>
+    </div>
+    <button class="p-2 leading-4 text-white hover:text-green-300 bg-black" type="button" id="button">Download</button>
+  </body>
+</html>
